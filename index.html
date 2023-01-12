@@ -12,7 +12,7 @@
       return new Promise(resolve => setTimeout(resolve, ms));
     }
     while (1){
-      document.getElementById("manito").value = document.getElementById("indigena").value;
+      document.centro.manito_texto.value = document.centro.indigena_texto.value;
       sleep(500)
     }
   </script>
@@ -22,11 +22,13 @@
   <h1 class="gogolfonts">Traducir de indígena a eu manito</h1>
 <body>
   <p>
-    <textarea name="indigena-texto" cols="60" rows="10" id="indigena">Texto en indígena...</textarea>
-    <br>
-    <div class="gogolfonts">Texto de indígena a eu manito</div>
-    <br>
-    <textarea name="indigena-texto" cols="60" rows="10" id="manito">Texto em eu manito...</textarea>
+    <formul name="centro">
+      <textarea name="indigena_texto" cols="60" rows="10" id="indigena">Texto en indígena...</textarea>
+      <br>
+      <div class="gogolfonts">Texto de indígena a eu manito</div>
+      <br>
+      <textarea name="manito_texto" cols="60" rows="10" id="manito">Texto em eu manito...</textarea>
+    </formul>
   </p>
 </body>
 </html>
