@@ -11,9 +11,8 @@
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
-    while (1){
-      document.centro.manito_texto.value = document.centro.indigena_texto.value;
-      sleep(500)
+    function traducir() {
+      document.centro.manito.value = document.centro.indigena.value;
     }
   </script>
 </head>
@@ -23,12 +22,12 @@
 <body>
   <p>
     <form name="centro">
-      <textarea name=indigena_texto cols="60" rows="10" id="indigena">Texto en indígena...</textarea>
+      <textarea name=indigena cols="60" rows="10" id="indigena">Texto en indígena...</textarea>
       <br>
       <div class="gogolfonts">Texto de indígena a eu manito</div>
       <br>
-      <textarea name=manito_texto cols="60" rows="10" id="manito">Texto em eu manito...</textarea>
-      <input type=button value="Traducir" onclick="Traducir()"> 
+      <textarea name=manito cols="60" rows="10" id="manito">Texto em eu manito...</textarea>
+      <input type=button value="Traducir" onclick="traducir()"> 
     </form>
   </p>
 </body>
