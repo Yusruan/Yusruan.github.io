@@ -18,53 +18,52 @@ TITLE = (255, 255, 255) # Color of text outside buttons
 # The font used for most text in the game:
 textfont = pygame.font.Font('freesansbold.ttf', 24)
 # The font used for the title in the main menu:
-menuTitle = pygame.font.Font('freesansbold.ttf', 50).render("Juego de trivia", True, TITLE)
+menuTitle = pygame.font.Font('freesansbold.ttf', 50).render("Trivia game", True, TITLE)
 
 # Position of the main menu title
 menuTitleRect = menuTitle.get_rect()
 menuTitleRect.center = (350, 200)
 
 # Text in the Play game button
-subTitle = textfont.render("Jugar", True, BLACK)
+subTitle = textfont.render("Play", True, BLACK)
 subTitleRect = subTitle.get_rect()
 subTitleRect.center = (350, 287.5)
 
 # Text in the Retry button at the eng of the game
-retryButtonTitle = textfont.render("Volver al menú", True, BLACK)
+retryButtonTitle = textfont.render("Return to menu", True, BLACK)
 retryButtonTitleRect = retryButtonTitle.get_rect()
 retryButtonTitleRect.center = (350, 287.5)
 
 
 # Each question has 3 possible anwers, in the array, the first element is always the question and the following one is the correct answer, followed by two other possible answers
 questions = [
-    ['¿Quién pintó la obra "La Gioconda"?', "Leonardo da Vinci", "Pablo Picasso", "Miguel Ángel"],
-    ['¿Cuál es la capital de España?', "Madrid", "Barcelona", "Valencia"],
-    ['¿En qué año se inició la primera guerra mundial?', "1914", "1918", "1920"],
-    ['¿Cuál es el rio mas largo del mundo?', "Nilo", "Amazonas", "Yangtze"],
-    ['¿Quén escribió "Cien Años de Soledad"?', "Gabriel García Márquez", "Mario Vargas Llosa", "Pablo Neruda"],
-    ['¿Cuál es la moneda oficial de Japón?', "Yen", "Dólar", "Euro"],
-    ['¿En qué pais se encuentra la Torre Eiffel?', "Francia", "Italia", "Inglaterra"],
-    ['¿Quién es el autor de la teoría de la relatividad?', "Albert Einstein", "Isaac Newton", "Galileo Galilei"],
-    ['¿En qué pais se encuentra el Machu Picchu?', "Perú", "Argentina", "Chile"],
-    ['¿Cuál es la capital de Italia?', "Roma", "Milán", "Venecia"],
-    ['¿Quién compuso la famosa novena sinfonía?', "Ludwig van Beethoven", "Wolfgang Amadeus Mozart", "Johan Sebastian Bach"],
-    ['¿Cuál es la capital de México?', "Ciudad de México", "Guadalajara", "Monterrey"],
-    ['¿En qué país se encuentra la ciudad de Marrakech?', "Marruecos", "Túnez", "Argelia"],
-    ['¿Quién escribió "El Quijote"?', "Miguel de Cervantes", "Federico García Lorca", "Lope de Vega"],
-    ['¿En qué país se encuentra la estatua de la libertad?', "Estados unidos", "Inglaterra", "Francia"],
-    ['¿Quién pintó "La noche estrellada"?', "Vincent van Gogh", "Pablo Picasso", "Claude Monet"],
-    ['¿En qué país se encuentra el Coliseo Romano?', "Italia", "Grecia", "España"],
-    ['¿Quién escribió "Don Juan Tenorio"?', "José Zorrilla", "Miguel de Cervantes", "Lope de Vega"],
-    ['¿Cuál es la fórmula química del agua?', "H2O", "CO2", "O2"],
-    ['¿Cuál es el país más grande del mundo por área?', "Rusia", "Canadá", "Estados Unidos"],
-    ['¿En qué año comenzó la Segunda Guerra Mundial?', "1939", "1914", "1945"],
-    ['¿Cuál es el océano más grande del mundo?', "Pacífico", "Atlántico", "Índico"],
-    ['¿Quién escribió la obra "Hamlet"?', "William Shakespeare", "Charles Dickens", "Jane Austren"],
-    ['¿Cuál es el país más poblado del mundo?', "China", "India", "Estados Unidos"],
-    ['¿En qué continente se encuentra Egipto?', "África", "Asia", "Europa"],
-    ['¿En qué ciudad se encuentra el Coliseo Romano?', "Roma", "Atenas", "Barcelona"],
-    ['¿Cuál es la capital de Australia?', "Canberra", "Sídney", "Melbourne"],
-    ['¿Cuál es el animal terrestre más grande del mundo?', "Elefante africano", "Ballena azul", "Jirafa"],
+    ['Who painted the work "La Gioconda"?', 'Leonardo da Vinci', 'Michelangelo', 'Pablo Picasso'],
+    ['What is the capital of Spain?', 'Madrid', 'Barcelona', 'Valencia'],
+    ['In what year did World War I start?', '1914', '1918', '1920'],
+    ['What is the longest river in the world?', 'Amazon', 'Nile', 'Yangtze'],
+    ['Who wrote "One Hundred Years of Solitude"?', 'Gabriel García Márquez', 'Mario Vargas Llosa', 'Pablo Neruda'],
+    ['What is the official currency of Japan?', 'Yen', 'Dollar', 'Euro'],
+    ['In which country is the Eiffel Tower located?', 'France', 'England', 'Italy'],
+    ['Who is the author of the theory of relativity?', 'Albert Einstein', 'Isaac Newton', 'Galileo Galilei'],
+    ['In which country is Machu Picchu located?', 'Peru', 'Argentina', 'Chile'],
+    ['What is the capital of Italy?', 'Rome', 'Venice', 'Milan'],
+    ['Who composed the Ninth Symphony?', 'Ludwig van Beethoven', 'Wolfgang Amadeus Mozart', 'Johann Sebastian Bach'],
+    ['What is the capital of Mexico?', 'Mexico City', 'Guadalajara', 'Monterrey'],
+    ['In which country is the city of Marrakech located?', 'Morocco', 'Tunisia', 'Algeria'],
+    ['Who wrote "Don Juan Tenorio"?', 'José Zorrilla', 'Miguel de Cervantes', 'Lope de Vega'],
+    ['Who painted "The Starry Night"?', 'Vincent van Gogh', 'Pablo Picasso', 'Claude Monet'],
+    ['In which country is the Roman Colosseum located?', 'Italy', 'Greece', 'Spain'],
+    ['Who wrote the novel "One Hundred Years of Solitude"?', 'Gabriel García Márquez', 'Pablo Neruda', 'Julio Cortázar'],
+    ['What is the chemical formula of water?', 'H2O', 'CO2', 'O2'],
+    ['Which is the largest country in the world by area?', 'Russia', 'Canada', 'United States'],
+    ['In what year did World War II start?', '1939', '1945', '1914'],
+    ['What is the largest ocean in the world?', 'Pacific', 'Atlantic', 'Indian'],
+    ['Who wrote the play "Hamlet"?', 'William Shakespeare', 'Charles Dickens', 'Jane Austen'],
+    ['What is the most populous country in the world?', 'China', 'India', 'United States'],
+    ['In which continent is Egypt located?', 'Africa', 'Asia', 'Europe'],
+    ['In which city is the Roman Colosseum located?', 'Rome', 'Athens', 'Barcelona'],
+    ['Which scientist proposed the theory of relativity?', 'Albert Einstein', 'Isaac Newton', 'Galileo Galilei'],
+    ['What is the capital of Australia?', 'Canberra', 'Sydney', 'Melbourne']
 ]
 questions_number = 5 # The number of questions that you will be asked
 
@@ -148,9 +147,9 @@ while True:
         pygame.draw.rect(screen, BLACK, (220, 250, 260, 80), border_radius=5)
         pygame.draw.rect(screen, WHITE, (225, 255, 250, 65), border_radius=5)
 
-        # Show the "Juego de trivia" text
+        # Show the "Trivia game" text
         screen.blit(menuTitle, menuTitleRect)
-        # Show the "Jugar" text
+        # Show the "Play" text
         screen.blit(subTitle, subTitleRect)
 
     elif end_screen:
@@ -160,11 +159,11 @@ while True:
 
         # This code here decides if the score was high, regular or low compared to the questions number
         if score >= questions_number-(questions_number/3):
-            scoreprompt = f"¡Tu puntaje fue de {score}/{questions_number}!"
+            scoreprompt = f"Your score was {score}/{questions_number}!"
         elif score >= questions_number-(questions_number/2):
-            scoreprompt = f"Tu puntaje fue de {score}/{questions_number}."
+            scoreprompt = f"Your score was {score}/{questions_number}."
         else:
-            scoreprompt = f"Tu puntaje fue de {score}/{questions_number}. Intenta de nuevo"
+            scoreprompt = f"Your score was {score}/{questions_number}. Try to do better next time"
 
         # The text to be shown here is decided by the code above, with three posibilities, it is displayed on top of the button drawn before
         Text = textfont.render(scoreprompt, True, TITLE)
