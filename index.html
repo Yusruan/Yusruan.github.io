@@ -1,60 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <h1>Archivos del juego:</h1>
-  <h2>Tienen que descargarlos y subirlos a un mismo replit</h2>
-  <br>
-  <a href="main.py" download>Código del juego: main.py</a>
-  <hr>
-  <p>Archivos opcionales (pueden reemplazarlos por los que quieran):</p>
-  <a href="background.jpg" download>Fondo (si lo reemplazan cambienle el nombre al nuevo por background.jpg, no importa que les salga)</a>
-  <br>
-  <a href="musica.mp3" download>Música (si lo reemplazan cambienle el nombre al nuevo por musica.mp3, no importa que les salga)</a>
-  <hr><hr>
-  <h1>Instrucciones sobre el juego:</h1>
-  <br>
-  <h2>Variables para cambiar su funcionamiento:</h2>
-  <p>Para cambiar el número de preguntas que se hacen, entren al código y cambien el valor de la variable "questions_number" en la línea 68 al que quieran:
-    <br>
-    <em>"questions_number = 20"</em> en la línea 68 para 20 preguntas, por ejemplo
-    <br>
-    El número no puede ser mayor al número de preguntas, que por ahora es 28
-  </p>
-  <br>
-  <p>Para añadir una pregunta nueva o quitar otra, entren al código y: <br> en la línea 38 hay una lista de preguntas, cada pregunta tiene la siguiente forma: <br>
-    <em><b>['Pregunta', "Respuesta correcta", "Opción incorrecta 1", "Opción incorrecta 2"],</b></em>
-    <br>
-    para añadir una nueva, pueden ponerla usando esta misma estructura después de la coma al final de cualquiera de las preguntas que ya existen, y pueden remover cualquiera también
-    <br>
-    recuerden poner 4 espacios antes de poner cualquier pregunta nueva, para que todas queden bien agrupadas, si ponen más o menos de 4 espacios van a obtener un error
-  </p>
-  <br>
-  <p>Para cambiar el tiempo que se espera despues de responder una pregunta y pasar a la siguiente, entren al código y cambien <b>x</b> en el <em>time.sleep(<b>x</b>)</em> de la línea 261 por el tiempo que mejor les parezca en segundos
-    <br>
-    Pueden usar decimales y fracciones, o cualquier operación matemática que resulte en un número real también
-  </p>
-  <br>
-  <p>
-    Para cambiar los colores que se ven en pantalla, entren al código y cambien en las líneas 12 a 15 las variables WHITE RED GREEN y BLACK por los colores que quieran de la siguiente forma:<br>(rojo, verde, azul), donde cada color es representado por un número del 0 al 255.
-    <br>
-    Pueden escoger fácilmente cualquier color <a href="https://htmlcolorcodes.com/color-picker/">aquí</a>, copiando el código de color rgb del color que escojan y pegándolo después del COLOR = entre paréntesis para cambial el color que quieran.
-    <br>
-    En la línea 16 pueden cambiar el valor de la variable TITLE para modificar el color de los textos que aparezcan sobre el fondo como el título en la pantalla principal del juego.
-  </p>
-  <hr>
-  <h3>Cambiar el texto que se muestra en el juego:</h3>
-  <p>Pueden cambiar el título de la pantalla principal "Juego de trivia" en la línea 21
-    <br>
-    El texto del botón de la pantalla principal "Jugar" en la línea 28
-    <br>
-    El texto del botón de la pantalla final "Volver al menú" en la línea 33
-    <br>
-    El título de la ventana "Juego" en la línea 84
-    <br>
-    El texto que se muestra al final del juego si respondes bien la gran mayoría de las preguntas en la línea 163
-    <br>
-    El texto que se muestra al final del juego si respondes bien bastantes preguntas en la línea 165
-    <br>
-    El texto que se muestra al final del juego si respondiste mal mas de la mitad de las preguntas en la línea 167
-    <br>
-    No pongan textos demasiados largos para ninguna de estas cosas
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@300&family=Ubuntu:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+      h1 {
+        font-family: 'Ubuntu', sans-serif;
+        text-align: center;
+      }
+
+      p {
+        font-family: 'Dongle', sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>Juego de Trivia</h1>
+    <p>
+      
+      <a href="juego.zip" download>Descargar juego</a> <br><br>
+      
+      <a href="main.py" download>Descargar código</a> <br>
+      <a href="background.jpg" download>Descargar fondo</a> <br>
+      <a href="music.mp3" download>Descargar música</a> <br><hr><br>
+    
+      Si quieren cambiar algo más pueden ver las <a href="explicacion.html">explicaciones</a>.
+    
+    </p>
+
+  </body>
 </html>
