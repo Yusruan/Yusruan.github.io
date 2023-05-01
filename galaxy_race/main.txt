@@ -54,9 +54,9 @@ while True:
                 died = False
 
         screen.blit(background, (0, 0))
-        screen.blit(game_over_text, (screen.get_width()/2-game_over_text.get_width()/2, screen.get_height()/2-game_over_text.get_height()/2))
+        screen.blit(game_over_text, (screen_dimensions[0]/2-game_over_text.get_width()/2, screen_dimensions[1]/2-game_over_text.get_height()/2))
         score_display = font.render("Score: "+str(score), True, (255, 255, 255))
-        screen.blit(score_display, (screen.get_width()/2 - score_display.get_width()/2, screen.get_height()/2 - score_display.get_height()/2 + 100))
+        screen.blit(score_display, (screen_dimensions[0]/2 - score_display.get_width()/2, screen_dimensions[1]/2 - score_display.get_height()/2 + 100))
         
         pygame.display.update()
         pygame.time.Clock().tick(20)
