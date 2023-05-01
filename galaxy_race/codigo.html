@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+  <script>
+    
+    function setUpSize(){
+      document.getElementById("ifrem").setAttribute("height", window.innerHeight);
+      document.getElementById("ifrem").setAttribute("width", window.innerWidth);
+    }
+    
+  </script>
+    
+  <body>
+    
+    <iframe src="main.txt" id="ifrem" width=1000, height=800 onload="setUpSize()"></iframe>
+    
+  </body>
+</html>
