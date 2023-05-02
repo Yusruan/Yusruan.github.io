@@ -28,7 +28,7 @@ WHITE = (255, 255, 255) # Color of the buttons
 RED = (237, 137, 142) # Color for wrong answers
 GREEN = (105, 240, 174) # Color for right answers
 BLACK = (57, 40, 34) # Color for text and buttons' outlines
-TITLE = (80, 79, 64) # Color of text outside buttons
+TITLE = (65, 50, 70) # Color of text outside buttons
 
 fonts = {
     # The font used for most text in the game:
@@ -185,9 +185,21 @@ while True:
                     pygame.mixer.Sound.play(click)
                     pressed_button = 3
 
+    scroll_y += BACKGROUND_SPEED/2
+    scroll_x += BACKGROUND_SPEED
+    if scroll_y >= backgrounds["in_game"].get_height():
+        scroll_y = 0
+    
+    if scroll_x >= backgrounds["in_game"].get_width():
+        scroll_x = 0
+    for row in range(2):
+        for offset in range(2): 
+            SCREEN.blit(backgrounds["in_game"], [row*backgrounds["in_game"].get_width()-scroll_x, backgrounds["in_game"].get_height()*offset-scroll_y])
+
     if menu: # The menu is very simple:
 
-        SCREEN.blit(backgrounds["menu"], (0, 0))
+        # Show a happy cat
+        SCREEN.blit(cat_images["happy"], (0, SCREEN.get_height()-cat_images["happy"].get_height()))
 
         # Show the "Trivia game" text
         SCREEN.blit(GAME_TITLE, menuTitleRect)
@@ -196,18 +208,16 @@ while True:
 
     elif end_screen:
 
-        SCREEN.blit(backgrounds["blank"], (0, 0))
-
         # This code here decides if the score was high, regular or low compared to the questions number
         if score >= questions_number-(questions_number/3):
             scoreprompt = f"Your score was {score}/{questions_number}!"
-            SCREEN.blit(cat_images["happy"], (SCREEN.get_width()-cat_images["happy"].get_width(), 0))
+            SCREEN.blit(cat_images["happy"], (SCREEN.get_width()-cat_images["happy"].get_width(), SCREEN.get_height()-cat_images["happy"].get_height()))
         elif score >= questions_number-(questions_number/2):
             scoreprompt = f"Your score was {score}/{questions_number}."
-            SCREEN.blit(cat_images["normal"], (SCREEN.get_width()-cat_images["happy"].get_width(), 0))
+            SCREEN.blit(cat_images["normal"], (SCREEN.get_width()-cat_images["happy"].get_width(), SCREEN.get_height()-cat_images["happy"].get_height()))
         else:
             scoreprompt = f"Your score was {score}/{questions_number}. Try to do better next time"
-            SCREEN.blit(cat_images["sad"], (SCREEN.get_width()-cat_images["happy"].get_width(), 0))
+            SCREEN.blit(cat_images["sad"], (SCREEN.get_width()-cat_images["happy"].get_width(), SCREEN.get_height()-cat_images["happy"].get_height()))
 
         # The text to be shown here is decided by the code above, with three posibilities, it is displayed on top of the button drawn before
         Text = fonts[2].render(scoreprompt, True, TITLE)
@@ -234,20 +244,6 @@ while True:
         SCREEN.blit(retryButtonTitle, retryButtonTitleRect)
 
     else: # If we are not in the menu nor in the end SCREEN, we are playing the main game
-
-
-        scroll_y += BACKGROUND_SPEED/2
-        scroll_x += BACKGROUND_SPEED
-        if scroll_y >= backgrounds["in_game"].get_height():
-            scroll_y = 0
-        
-        if scroll_x >= backgrounds["in_game"].get_width():
-            scroll_x = 0
-
-        for row in range(2):
-            for offset in range(2): 
-
-                SCREEN.blit(backgrounds["in_game"], [row*backgrounds["in_game"].get_width()-scroll_x, backgrounds["in_game"].get_height()*offset-scroll_y])
 
         # If a button has been pressed
         if pressed_button > 0:
