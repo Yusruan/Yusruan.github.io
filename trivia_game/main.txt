@@ -1,3 +1,8 @@
+# Este código fue completamente desarrollado por Juan José Montaño
+# El código puede ser usado por cualquiera en cualquier contexyo y de cualquier forma que quepa dentro de la ley colombiana por cualquier persona sin condición alguna
+# No encontrará nadie ningún problema si decide reutilizarlo para desarrollar su propio juego de trivia en pygame, ni habrá ninguna consecuencia si decide publicar su trabajo o usarlo para obtener cualquier beneficio, no habrá necesidad de hacer ningún tipo de referencia ni mención al autor ni al trabajo para ello; puede decidir no hacerlo y recibir toda recompensa por él, tampoco hará falta compartir ningún tipo de ganancia o recompensa al autor.
+
+
 import random
 import time
 import pygame, sys
