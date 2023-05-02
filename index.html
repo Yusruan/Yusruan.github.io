@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quien te manda</title>
+
+<script>
+function Buscar(){
+	proyecto = document.getElementById('text').value;
+	window.location.href = proyecto;
+}
+</script>
+</head>
+
+<body>
+	<h2> Escribe el nombre de tu proyecto para buscar</h2>
+	<h4> usa guiones bajos (_) en lugar de espacios</h4>
+	<input type="text" id="text"></input>
+<button onclick="Buscar()" type="button">Buscar</button>
+</body>
+
+</html>
