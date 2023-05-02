@@ -1,0 +1,327 @@
+# https://www.freepik.com/free-vector/hand-drawn-emotes-elements-collection_35105930.htm#query=cat%20caricature&position=43&from_view=search&track=robertav1_2_sidr
+# Cat images by pikisuperstar on Freepik
+
+
+
+
+import random
+import time
+import pygame, sys
+from pygame.locals import QUIT
+pygame.init()
+
+# Setting up the window:
+SCREEN = pygame.display.set_mode((700, 500))
+pygame.display.set_caption('Genemiau')
+
+CATBOX_SIZE = 225
+GAME_SIZE = SCREEN.get_width() - CATBOX_SIZE
+print(GAME_SIZE/2)
+
+# Start the music to repeat forever:
+pygame.mixer.music.load("sound/music.mp3")
+click = pygame.mixer.Sound("sound/click.mp3")
+pygame.mixer.music.play(-1)
+
+# Colors:
+WHITE = (255, 255, 255) # Color of the buttons
+RED = (237, 137, 142) # Color for wrong answers
+GREEN = (105, 240, 174) # Color for right answers
+BLACK = (57, 40, 34) # Color for text and buttons' outlines
+TITLE = (65, 50, 70) # Color of text outside buttons
+
+fonts = {
+    # The font used for most text in the game:
+    1: pygame.font.Font('freesansbold.ttf', 14),
+    # The font used for menu buttons
+    2: pygame.font.Font('freesansbold.ttf', 20),
+    # The font used for the title in the main menu:
+    3: pygame.font.Font('freesansbold.ttf', 50)
+}
+
+GAME_TITLE = fonts[3].render("Genemiau Trivia", True, TITLE)
+
+# Position of the main menu title
+menuTitleRect = GAME_TITLE.get_rect()
+menuTitleRect.center = (SCREEN.get_width()/2, 200)
+
+# Text in the Play game button
+subTitle = fonts[2].render("Play", True, BLACK)
+subTitleRect = subTitle.get_rect()
+subTitleRect.center = (SCREEN.get_width()/2, 287.5)
+
+# Text in the Retry button at the eng of the game
+retryButtonTitle = fonts[2].render("Return to menu", True, BLACK)
+retryButtonTitleRect = retryButtonTitle.get_rect()
+retryButtonTitleRect.center = (SCREEN.get_width()/2, 287.5)
+
+def draw_button(button, color):
+    pygame.draw.rect(SCREEN, BLACK, button, border_radius=5)
+    pygame.draw.rect(SCREEN, color, (button[0]+5, button[1]+5, button[2]-10, button[3]-15), border_radius=5)
+
+# Each question has 3 possible anwers, in the array, the first element is always the question and the following one is the correct answer, followed by two other possible answers
+questions = [
+    ['How many primary colors are there?', 'Three', 'Four', 'Five'],
+    ['Which are the primary colors?', 'Red, blue, and yellow', 'Green, orange, and purple', 'Black, white, and gray'],
+    ['Which organ of the human body consumes more energy?', 'Brain', 'Heart', 'Liver'],
+    ['What is the longest river in the world?', 'Nile', 'Amazon', 'Yangtze'],
+    ['Who drew "la última cena"?', 'Leonardo da Vinci', 'Pablo Picasso', 'Vincent van Gogh'],
+    ['Which is the biggest ocean in the world?', 'Pacific Ocean', 'Atlantic Ocean', 'Indian Ocean'],
+    ['Who is said to have discovered América?', 'Christopher Columbus', 'Amerigo Vespucci', 'Vasco da Gama'],
+    ['What is the world\'s largest country?', 'Russia', 'Canada', 'China'],
+    ['What is the currency of united kingdom?', 'Pound sterling', 'Euro', 'Dollar'],
+    ['What is the fastest animal in the world?', 'Peregrine falcon', 'Cheetah', 'Blue whale'],
+    ['What planet is closer to the sun?', 'Mercury', 'Venus', 'Mars'],
+    ['Who is Thor\'s brother?', 'Loki', 'Odin', 'Baldr'],
+    ['Who betrayed jesus?', 'Judas', 'Peter', 'John'],
+    ['What is the name of a triangle that has three equal sides?', 'Equilateral triangle', 'Isosceles triangle', 'Scalene triangle'],
+    ['What sport is practiced by Roger Federer?', 'Tennis', 'Football', 'Basketball'],
+    ['Who is the author of Don Quixote?', 'Miguel de Cervantes', 'Gabriel García Márquez', 'Jorge Luis Borges'],
+    #['What does FIFA mean?', 'Fédération Internationale de Football Association', 'International Olympic Committee', 'United Nations Educational, Scientific and Cultural Organization'],
+    ['Who won the Qatar 2022 World Cup?', 'France', 'Brazil', 'Germany'],
+    ['What are the 3 states of matter?', 'Solid, liquid, and gas', 'Plasma, Bose-Einstein condensate, and superfluid', 'Colloid, emulsion, and foam'],
+    ['How many colors does the rainbow has?', 'Seven', 'Six', 'Eight'],
+    ['How does a plant feeds itself?', 'Photosynthesis', 'Respiration', 'Digestion'],
+    ['What does Hakuna Matata mean?', 'No worries', 'Thank you', 'Goodbye'],
+    ['how many minutes are there in an hour?', '60', '30', '45'],
+    ['What is the capital of Spain?', 'Madrid', 'Barcelona', 'Seville'],
+    ['Which is the red planet?', 'Mars', 'Venus', 'Jupiter'],
+    ['Which is the system that we use to breathe?', 'Respiratory system', 'Circulatory system', 'Digestive system'],
+    ['What continent is India  on?', 'Asia', 'Africa', 'South America'],
+    ['How many centimeters does a meter have?', '100', '50', '200'],
+    ['Which are the six continents?', 'Asia, América, Antartica, Australia, África and Europe', 'Russia, America, Antartica, Australia, Africa and Europe', 'Mexico, Asia, Antartica, Australia, Africa and Europe'],
+    ['Who painted the Mona Lisa?', 'Leonardo Da Vinci', 'Salvador Dalí', 'Pablo Picasso', 'Vincent Van Gogh'],
+    ["What is the tallest mountain in the world?", "Mount Everest", "Mount Kilimanjaro", "Mount Fuji"]
+]
+questions_number = 5 # The number of questions that you will be asked
+
+# Select from all the possible answers the ones that you will be asked using the for loop
+questions_to_ask = []
+for i in range(questions_number):
+    question = questions[random.randint(0, len(questions)-1)]
+
+    # This section makes sure all the questions are different by selecting again a random answer until the one selected isn't repeated at all in the questions to ask array
+    while question in questions_to_ask:
+        question = questions[random.randint(0, len(questions)-1)]
+    
+    questions_to_ask.append(question)
+
+# Setting up some default values:
+# To let the game know on which question of all the questions in the questions to ask array are you, where 1 is the first one
+current_question = 0
+# The color of each one of the three squares with answers in the main game
+squarescolor = [WHITE, WHITE, WHITE]
+# When it is True the game will stop for 0.5 seconds
+sleep = False
+# When it is true the menu will be displayed
+menu = True
+# When it is true the end SCREEN will be displayed
+end_screen = False
+#* if none of above are True then the main game will be displayed until end_screen is True
+# If you choose an answer this one will be True and the game will check wether it is correct or not
+question_answered = False
+# Setting score as 0 at the beggining of the game
+score = 0
+# Loading the backgrounds, scaled to fill the SCREEN
+backgrounds = {
+    "menu": pygame.transform.scale(pygame.image.load("backgrounds/menu_background.jpg"), [700, 500]),
+    "in_game": pygame.transform.scale(pygame.image.load("backgrounds/in_game_background.jpg"), [700, 500]),
+    "blank": pygame.transform.scale(pygame.image.load("backgrounds/blank_background.jpg"), [700, 500]),
+}
+# So we can decide which image of the cat to show
+cat_state = "normal"
+
+cat_images = {
+    "normal": pygame.transform.scale(pygame.image.load("cats/normal.png"), [200, 200]),
+    "sad": pygame.transform.scale(pygame.image.load("cats/sad.png"), [200, 200]),
+    "happy": pygame.transform.scale(pygame.image.load("cats/happy.png"), [200, 200])
+}
+
+scroll_y = 0
+scroll_x = 0
+BACKGROUND_SPEED = 0.1
+
+# An array with three numbers randomly organized. The position of these numbers will decide the order of the answers. Each time question answered is True this array will be randomly arranged again
+answers = []
+for i in range(3):
+    answer = random.randint(1, 3)
+    while answer in answers:
+        answer = random.randint(1, 3)
+    answers.append(answer)
+
+while True:
+    # returnToMenu can only be True during one whole frame, at the beggining of the next one it will be turned to False again
+    returnToMenu = False
+    # 0 Means no button was pressed, 1-3 indicates an answer was chosen
+    pressed_button = 0
+    #SCREEN.fill((255, 255, 255))
+
+    # Events:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+        # If any mouse button is pressed
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos() # an array with x and y position
+            # Since the position for the Retry and Start game in both Main menu and End Screen is the same
+            if menu or end_screen:
+                if mouse_pos[0] >= 220 and mouse_pos[0] <= 480 and mouse_pos[1] >= 250 and mouse_pos[1] <= 325:
+                    pygame.mixer.Sound.play(click)
+                    menu = False # Exit the menu in case you are in the menu
+                    returnToMenu = True # This will be True for the rest of the current frame
+
+            # If we are in the main game compare the position of the mouse with the position and size of each of the 3 answer buttons
+            elif mouse_pos[0] >= 50 and mouse_pos[0] <= 650 and mouse_pos[1] >= 200 and mouse_pos[1] <= 445:
+                if mouse_pos[1] <= 275:
+                    pygame.mixer.Sound.play(click)
+                    pressed_button = 1
+
+                elif mouse_pos[1] >= 285 and mouse_pos[1] <= 360:
+                    pygame.mixer.Sound.play(click)
+                    pressed_button = 2
+
+                elif mouse_pos[1] >= 370:
+                    pygame.mixer.Sound.play(click)
+                    pressed_button = 3
+
+    scroll_y += BACKGROUND_SPEED/2
+    scroll_x += BACKGROUND_SPEED
+    if scroll_y >= backgrounds["in_game"].get_height():
+        scroll_y = 0
+    
+    if scroll_x >= backgrounds["in_game"].get_width():
+        scroll_x = 0
+    for row in range(2):
+        for offset in range(2): 
+            SCREEN.blit(backgrounds["in_game"], [row*backgrounds["in_game"].get_width()-scroll_x, backgrounds["in_game"].get_height()*offset-scroll_y])
+
+    if menu: # The menu is very simple:
+
+        # Show a happy cat
+        SCREEN.blit(cat_images["happy"], (0, SCREEN.get_height()-cat_images["happy"].get_height()))
+
+        # Show the "Trivia game" text
+        SCREEN.blit(GAME_TITLE, menuTitleRect)
+        # Show the "Play" text
+        SCREEN.blit(subTitle, subTitleRect)
+
+    elif end_screen:
+
+        # This code here decides if the score was high, regular or low compared to the questions number
+        if score >= questions_number-(questions_number/3):
+            scoreprompt = f"Your score was {score}/{questions_number}!"
+            SCREEN.blit(cat_images["happy"], (SCREEN.get_width()-cat_images["happy"].get_width(), SCREEN.get_height()-cat_images["happy"].get_height()))
+        elif score >= questions_number-(questions_number/2):
+            scoreprompt = f"Your score was {score}/{questions_number}."
+            SCREEN.blit(cat_images["normal"], (SCREEN.get_width()-cat_images["happy"].get_width(), SCREEN.get_height()-cat_images["happy"].get_height()))
+        else:
+            scoreprompt = f"Your score was {score}/{questions_number}. Try to do better next time"
+            SCREEN.blit(cat_images["sad"], (SCREEN.get_width()-cat_images["happy"].get_width(), SCREEN.get_height()-cat_images["happy"].get_height()))
+
+        # The text to be shown here is decided by the code above, with three posibilities, it is displayed on top of the button drawn before
+        Text = fonts[2].render(scoreprompt, True, TITLE)
+        TextRect = Text.get_rect()
+        TextRect.center = (SCREEN.get_width()/2, 187.5)
+
+        # If the button has been clicked
+        if returnToMenu:
+            menu = True # Turn it back to true since this variable is False during the whole main game and end SCREEN
+            end_screen = False
+            current_question = 0 # Each time we answer a question this variable increases, so set it up to its initial value
+            score = 0 # Reset the score
+
+            # Decide again which questions to ask
+            questions_to_ask = []
+            for i in range(questions_number):
+                question = questions[random.randint(0, len(questions)-1)]
+                while question in questions_to_ask:
+                    question = questions[random.randint(0, len(questions)-1)]
+                questions_to_ask.append(question)
+            question_answered = False
+
+        SCREEN.blit(Text, TextRect)
+        SCREEN.blit(retryButtonTitle, retryButtonTitleRect)
+
+    else: # If we are not in the menu nor in the end SCREEN, we are playing the main game
+
+        # If a button has been pressed
+        if pressed_button > 0:
+            squarescolor[answers.index(1)] = GREEN # Color the right answer whith green (the element in the answers array whose value (1) corresponds to the index of the right answer of the question, remember the answers array is randomly organized so it could be [1, 2, 3], [3, 1, 2], and so on)
+            if questions_to_ask[current_question][1] == questions_to_ask[current_question][answers[pressed_button-1]]:
+                score += 1
+                cat_state = "happy"
+                # If the answer we chose is the right answer increase our score
+            else:
+                squarescolor[pressed_button-1] = RED
+                cat_state = "sad"
+                # Otherwise color the answer we wrote with red
+            # Sleep for 0.5 seconds
+            sleep = True
+            # This indicates the game to do several thing we will see further on
+            question_answered = True
+
+        # Draw the Question's button (which is not clickable at all)
+        draw_button((25, 50, 425, 105), WHITE)
+        #pygame.draw.rect(SCREEN, BLACK, (30, 50, 415, 105), border_radius=5)
+        #pygame.draw.rect(SCREEN, WHITE, (35, 55, 630, 90), border_radius=5)
+
+        # Draw the first option button
+        draw_button((30, 200, 415, 80), squarescolor[0])
+
+        # Draw the second option button
+        draw_button((30, 285, 415, 80), squarescolor[1])
+
+        # Draw the third option button
+        draw_button((30, 370, 415, 80), squarescolor[2])
+
+        # Display a text with the question in it on SCREEN
+        Title = fonts[1].render(questions_to_ask[current_question][0], True, BLACK)
+        TitleRect = Title.get_rect()
+        TitleRect.center = (GAME_SIZE/2, 100)
+        SCREEN.blit(Title, TitleRect)
+
+        # Display the 3 answers of the current question on SCREEN in the order indicated by the answers array
+        for i in range(3):
+            Text = fonts[1].render(questions_to_ask[current_question][answers[i]], True, BLACK)
+            TextRect = Text.get_rect()
+            TextRect.center = (GAME_SIZE/2, 237.5+(i)*85)
+            SCREEN.blit(Text, TextRect)
+        
+        if question_answered:
+
+            # Reorder the answers array again so that the correct answer of the next question isn't at the same position than the one before
+            answers = []
+            for i in range(3):
+                answer = random.randint(1, 3)
+                while answer in answers:
+                    answer = random.randint(1, 3)
+                answers.append(answer)
+
+            # For changing the question
+            current_question += 1
+
+            # If there are no more answers, then we have reached the end and should go to the end SCREEN on the next frame
+            if current_question > questions_number-1:
+                end_screen = True
+
+            # Returning to False so this doesn't repeats until we answer another question
+            question_answered = False
+
+        
+        SCREEN.blit(cat_images[cat_state], (GAME_SIZE + (CATBOX_SIZE/2-cat_images[cat_state].get_width()/2), SCREEN.get_height()/2-cat_images[cat_state].get_height()/2))
+
+    #pygame.draw.line(SCREEN, (0, 0, 0), [GAME_SIZE/2, 0], [GAME_SIZE/2, SCREEN.get_height()], 2)
+    #pygame.draw.line(SCREEN, (0, 0, 0), [GAME_SIZE+CATBOX_SIZE/2, 0], [GAME_SIZE+CATBOX_SIZE/2, SCREEN.get_height()], 2)
+    #pygame.draw.line(SCREEN, (0, 0, 0), [0, SCREEN.get_height()/2], [SCREEN.get_width(), SCREEN.get_height()/2], 2)
+    #pygame.draw.line(SCREEN, (255, 0, 0), [GAME_SIZE, 0], [GAME_SIZE, SCREEN.get_height()], 3)
+
+    # Updating the SCREEN
+    pygame.display.update()
+
+    # This should be done here so that SCREEN is updated before sleeping, also, here we set all squares' color back to white after sleeping
+    if sleep:
+        time.sleep(0.5)
+        squarescolor = [WHITE, WHITE, WHITE]
+        cat_state = "normal"
+        sleep = False
