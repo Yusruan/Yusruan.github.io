@@ -7,6 +7,9 @@
 <script>
 function Buscar(){
 	proyecto = document.getElementById('text').value + ".wav";
+	if (proyecto == ".wav"){
+		return prompt("Escribe algo");
+	}
 	window.location.href = proyecto;
 }
 </script>
@@ -21,6 +24,7 @@ function Buscar(){
 
 	<h3>Listado de piezas:</h3>
 	<ol>
+		<li>music_work_1</li><br>
 		<li>bingchilling</li>
 		<li>bingchilling_reflexion</li>
 		<li>bingchilling_reflexion_2</li>
