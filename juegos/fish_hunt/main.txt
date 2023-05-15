@@ -95,7 +95,7 @@ pygame.mouse.set_visible(0)
 # Physics:
 GRAVITY = 0.6
 PELICAN_JUMP = 10
-FISH_JUMP = 20
+FISH_JUMP = 25
 PELICAN_SPEED = 6
 ROTATION_SPEED = 0.02 # For fish, the only rotating objects
 
@@ -144,17 +144,15 @@ SEA_SPEED = 2
 
 # Waiting things
 FISH_WAITING = 1 # (In seconds)
-BOAT_APPEARANCE_WAIT= 0.5 # (In seconds)
+BOAT_APPEARANCE_WAIT= 1 # (In seconds)
 FISH_APPEARANCE_WAIT = 0.5 # (In seconds)
 TEXT_DISAPEARANCE_TIME = 1 # (In seconds)
 
 
 
 #Probability things
-BOAT_INITIAL_PROBABILITY = 50
-FISH_INITIAL_PROBABILITY= 50
-boat_probability = BOAT_INITIAL_PROBABILITY
-fish_probability = FISH_INITIAL_PROBABILITY
+boat_probability = 50
+FISH_PROBABILITY = 50
 
 
 
@@ -187,17 +185,34 @@ for frame in range(len(PELICAN_FRAMES)): # Now add another set of flipped surfac
     PELICAN_FRAMES.append(Sprite("pelican/"+str(frame), [PELICAN_SIZE[0], PELICAN_SIZE[1]], True))
 
 
-BACKGROUND_IMAGE    =    Sprite("background",           SCREEN_SIZE)
-BULLET_IMAGE        =    Sprite("bullet",     [1    ,   2         ])
-BOAT_IMAGE          =    Sprite("boat",       [168  ,   100       ])
-BOAT_IMAGE_FLIPPED  =    Sprite("boat",       [168  ,   100       ], flip=True)
+BULLET_IMAGE        =    Sprite("bullet",     [20   ,   20        ])
+BOAT_IMAGE          =    Sprite("boat",       [84   ,   50        ])
+BOAT_IMAGE_FLIPPED  =    Sprite("boat",       [84   ,   50        ], flip=True)
 SEA_IMAGE           =    Sprite("sea",        [200  ,   SEA_HEIGHT])
+
+
+class Background():
+    surface = pygame.Surface(SCREEN_SIZE)
+    color = [255, 255, 255]
+    surface.fill(tuple(color))
+
+    def Trasitate(self, color):
+        self.color[0] += int((color[0]-self.color[0])/FPS/0.125) # This last number represents the time it will take to transitate
+        self.color[1] += int((color[1]-self.color[1])/FPS/0.125)
+        self.color[2] += int((color[2]-self.color[2])/FPS/0.125)
+        self.surface.fill(tuple(self.color))
+    
+        print(self.color)
+
+BACKGROUND_IMAGE = Background()
+
 
 ## From this one we create fish species objects (not the fishes themselves) that store information about the fish
 class defineNewSpecie():
     def __init__(self, name, value, size):
         self.value = value
-        self.sprite = pygame.transform.scale(pygame.image.load(MATERIALSDIR+"/image/fish/"+name), size)
+        self.name = name
+        self.sprite = Sprite("fish/"+name, size)
         self.size = size
 
         self.probability = None
@@ -206,16 +221,17 @@ class defineNewSpecie():
 
 fish_species = [ # There is a total of 15 (and the erizo) species in the game
 
-    defineNewSpecie(name="erizo", value=-1, size=[18, 36]),
+    defineNewSpecie(name="erizo", value=-1, size=[18, 18]),
 
     defineNewSpecie("clownfish",    1,    [18, 36]),
     defineNewSpecie("sargento",     2,    [18, 36]),
     defineNewSpecie("dory",         2,    [18, 36]),
-    defineNewSpecie("cojinua",      6,    [18, 36]),
+
     defineNewSpecie("mojarra",      8,    [18, 36]),
+    defineNewSpecie("cojinua",      6,    [18, 36]),
     defineNewSpecie("palometa",     9,    [18, 36]),
     defineNewSpecie("caballa",     10,    [18, 36]),
-    defineNewSpecie("dorado",      12,    [18, 36]),
+    defineNewSpecie("mahi",        12,    [18, 36]),
     defineNewSpecie("atun",        13,    [18, 36]),
     defineNewSpecie("salmon",      14,    [18, 36]),
     defineNewSpecie("cusk",        16,    [18, 36]),
@@ -231,6 +247,7 @@ stages = [
     { # Stage 1
         "name"      : "Reef",
         "max score" : 35,
+        "bg color"  : (13, 183, 242),
 
         "sargento"  : 40,
         "clownfish" : 30,
@@ -242,22 +259,24 @@ stages = [
     { # Stage 2
         "name" : "Shore",
         "max score" : 180,
+        "bg color"  : (221, 234, 232),
 
         "cojinua"   : 25,
         "mojarra"   : 25,
         "palometa"  : 25,
-        "erizo"     : 15,
+        "erizo"     : 25,
         "boats"     : 10
     },
 
     { # Stage 3
         "name" : "Warm Ocean",
         "max score" : 450,
+        "bg color"  : (237, 255, 246),
 
-        "caballa"   : 20,
-        "dorado"    : 20,
-        "atun"      : 20,
-        "erizo"     : 20,
+        "caballa"   : 25,
+        "mahi"      : 25,
+        "atun"      : 25,
+        "erizo"     : 25,
         "boats"     : 20
     },
 
@@ -265,10 +284,10 @@ stages = [
         "name" : "Cold Ocean",
         "max score" : 450,
 
-        "salmon"    : 15,
-        "cusk"      : 15,
-        "saithe"    : 15,
-        "erizo"     : 30,
+        "salmon"    : 17,
+        "cusk"      : 17,
+        "saithe"    : 17,
+        "erizo"     : 49,
         "boats"     : 25
     },
 
@@ -287,6 +306,11 @@ stages = [
 stage = 0
 
 def ChangeStage():
+    global texts
+    global boat_probability
+
+    texts[0].update("Stage: "+stages[stage]["name"])
+
     for specie in fish_species:
         if specie.name in stages[stage]:
             specie.probability = stages[stage][specie.name]
@@ -316,14 +340,32 @@ def move(obj):
 
 
 ## Score texts are also objects who moves trough screen, with an alpha value and a surface with text
-class ScoreText(PhysicsObject):
+class Text(PhysicsObject):
     velocity = [0, -5]
     gravity = 0 # It will just go upwards
     alpha = 255
-    def __init__(self, text, position, color, outline):
-        self.text = render(text, FONT, color, outline)
+    def __init__(self, text, position, color, outline, dissappearance_speed=1):
+        self.dissappearance_speed = dissappearance_speed
+        self.surface = render(text, FONT, color, outline)
         self.position = position
+    
+    def tick(self):
+        self.set_alpha(self.alpha)
+        self.alpha -= self.dissappearance_speed
 
+class PermanentText():
+
+    def __init__(self, text, position, color, outline):
+        self.text = text
+        self.color = color
+        self.outline = outline
+        self.position = position
+        self.surface = render(text, FONT, color, outline)
+    
+    def update(self, text):
+        self.surface = render(text, FONT, self.color, self.outline)
+
+texts = [PermanentText("0", (0, 0), (255, 255, 255), (0, 0, 0))]
 
 
 class Boat(PhysicsObject):
@@ -331,10 +373,12 @@ class Boat(PhysicsObject):
         self.position = [[-BOAT_IMAGE.surface.get_width(), SCREEN_SIZE[0]][random(0, 1)], Y_LIMIT-BOAT_IMAGE.surface.get_height()]
         self.gravity = 0
         if self.position[0] == -BOAT_IMAGE.surface.get_width(): # Which means the boat starts from the left of the screen
-            self.velocity = [6, 0]
+            self.velocity = [8, 0]
         else:
-            self.velocity = [-6, 0]
+            self.velocity = [-8, 0]
         self.bulletpoint = random(0, SCREEN_SIZE[0]-BOAT_IMAGE.surface.get_width())
+
+        self.can_shoot = True
 
 
 
@@ -348,7 +392,7 @@ class Fish(PhysicsObject):
         self.wait = 0
         self.waiting = True
 
-        _random = random(0, 100)
+        _random = random(0, 99)
         probability = 0
 
         for specie in fish_species:
@@ -370,15 +414,14 @@ class Fish(PhysicsObject):
 
 
 class Bullet(PhysicsObject):
+    gravity = 0
     def __init__(self, position, pelican): # Initial position is only one value since all boats are at the same height of the screen, only thing that varies is x position
-        self.gravity = 0
-        self.position = [position+21,Y_LIMIT-50] # The additions are in order to position the bullet at the center of the boat and its objective at the center of the pelican
+        self.position = [position+BOAT_IMAGE.surface.get_width()/2,Y_LIMIT+BOAT_IMAGE.surface.get_height()/2] # The additions are in order to position the bullet at the center of the boat and its objective at the center of the pelican
 
         # The following code calculates the x and y velocity so that the sum of both is 7 and direction is the same
-        difference = [abs((pelican.position[0]+PELICAN_SIZE[0]/2) - (position+21)), abs((pelican.position[1]+PELICAN_SIZE[1]/2) - (Y_LIMIT+50))]
-        lack = 7*sqrt(difference[0]**2 + difference[1]**2)/(difference[0]**2 + difference[1]**2)
-        lack = [lack*difference[0], lack*difference[0]]
-        self.velocity = lack
+        difference = [(pelican[0]+PELICAN_SIZE[0]/2) - (position+BOAT_IMAGE.surface.get_width()/2), (Y_LIMIT+BOAT_IMAGE.surface.get_height()/2) - (pelican[1]+PELICAN_SIZE[1]/2)]
+        lack = 10/sqrt(difference[0]**2 + difference[1]**2)
+        self.velocity = [lack*difference[0], 0-lack*difference[1]]
 
 
 
@@ -389,9 +432,16 @@ class Pelican(PhysicsObject):
 
     current_frame = 0 # Initial frame
 
-    looking_right = False # By default the sprite is looking left, so with this we can know when to flip it
+    
+    
+    def __init__(self):
 
-    position = [(SCREEN_SIZE[0]/2 - PELICAN_SIZE[0]/2), (SCREEN_SIZE[1]/3-PELICAN_SIZE[0]/2)]# Initial position
+        self.looking_right = False # By default the sprite is looking left, so with this we can know when to flip it
+
+        self.position = [(SCREEN_SIZE[0]/2 - PELICAN_SIZE[0]/2), (SCREEN_SIZE[1]/3-PELICAN_SIZE[0]/2)]# Initial position
+        
+
+
 
 
 
@@ -433,20 +483,39 @@ DRAWSURFACES = {
     # For each element in each one of these arrays, each surface will be drawn
 
 
+
+objects_in_game= {
+    "Pelican" : [],
+    "Fish"    : [],
+    "Boats"   : [],
+    "Bullets" : []
+}
 def addObject(obj, section):
     objects_in_game[section].append(obj)
+    
+    
+    
 
+
+
+
+# Aca termina la
+
+
+
+def die():
+
+    texts[0].update("You diaed")
+
+    objects_in_game["Pelican"][0].__init__()
+    
+    score = 0
 
 def game():
+    global stages
+    global stage
 
     ChangeStage()
-
-    global objects_in_game
-    objects_in_game= {
-        "Pelican" : [],
-        "Fish"    : [],
-        "Boats"   : []
-    }
 
     # Adding the pelican on its initial position
     addObject(Pelican(), "Pelican")
@@ -524,7 +593,7 @@ def game():
 
         if fish_waiting_tick == FISH_APPEARANCE_WAIT*FPS:
 
-            if random(0, 100) <= fish_probability:
+            if random(0, 100) <= FISH_PROBABILITY:
 
                 addObject(Fish(), "Fish")
 
@@ -570,6 +639,7 @@ def game():
 
                     if  objects_in_game["Fish"][index].specie.value >= 0:
                         score += objects_in_game["Fish"][index].specie.value
+                        texts[0].update(str(score))
                     else:
                         die()
                     del objects_in_game["Fish"][index]
@@ -577,8 +647,8 @@ def game():
 
                     # Here we check if we must pass to the next stage
                     if score >= stages[stage]["max score"]:
-                        stages += 1
-                        if stages > len(stages):
+                        stage += 1
+                        if stage > len(stages):
                             pass # You won the game
                         ChangeStage()
 
@@ -599,6 +669,11 @@ def game():
                 deleted_items += 1
                 continue
 
+            if abs(objects_in_game["Boats"][index].position[0] - objects_in_game["Boats"][index].bulletpoint) <= abs(objects_in_game["Boats"][index].velocity[0])*4 and objects_in_game["Boats"][index].can_shoot:
+
+                objects_in_game["Boats"][index].can_shoot = False
+
+                addObject(Bullet(objects_in_game["Boats"][index].position[0], objects_in_game["Pelican"][0].position), "Bullets")
 
             for hitbox in hitboxes:
 
@@ -606,6 +681,11 @@ def game():
 
                     # We die here
                     die()
+
+        # Checking pelican's state:
+
+        if objects_in_game["Pelican"][0].position[1] >= Y_LIMIT:
+            die()
 
 
 
@@ -626,12 +706,19 @@ def game():
 
         # Fish surfaces
         for fish in objects_in_game["Fish"]:
-            DRAWSURFACES["Fish"].append([pygame.transform.rotate(fish.specie.sprite, fish.angle()), fish.position])
+            DRAWSURFACES["Fish"].append([pygame.transform.rotate(fish.specie.sprite.surface, fish.angle()), fish.position])
         
         # Boat surfaces
         for boat in objects_in_game["Boats"]:
             if boat.velocity[0] > 0: DRAWSURFACES["Boats"].append([BOAT_IMAGE_FLIPPED.surface, boat.position])
             else: DRAWSURFACES["Boats"].append([BOAT_IMAGE.surface, boat.position])
+
+        for text in texts:
+            DRAWSURFACES["Text"].append([text.surface, text.position])
+        
+        for bullet in objects_in_game["Bullets"]:
+            DRAWSURFACES["Bullets"].append([BULLET_IMAGE.surface, bullet.position])
+        print(len(objects_in_game["Bullets"]))
         
 
 
@@ -649,12 +736,9 @@ def game():
 
 
         # Background
-        if -bkg_scroll > BKG_WIDTH: bkg_scroll = 0
+        BACKGROUND_IMAGE.Trasitate(stages[stage]["bg color"])
 
-        for offset in range(int(round(SCREEN_SIZE[0]/BKG_WIDTH, 0))+2):
-            DRAWSURFACES["Background"].append([BACKGROUND_IMAGE.surface, [offset*BKG_WIDTH+bkg_scroll, 0]])
-
-        bkg_scroll -= BKG_SPEED
+        DRAWSURFACES["Background"].append([BACKGROUND_IMAGE.surface, [0, 0]])
 
 
 
@@ -687,6 +771,23 @@ def game():
 
 
 
+def menu():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                wexit()
+
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                wexit()
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pos():
+                    pygame.mixer.Sound.play(click)
+                    menu = False # Exit the menu in case you are in the menu
+                    returnToMenu = True # This will be True for the rest of the current frame
+
 
 
 
@@ -694,6 +795,6 @@ def game():
 
 while True:
 
-    #menu()
+    menu()
 
     game()
