@@ -85,11 +85,6 @@ pygame.display.set_caption("Asfghjklñ")
 pygame.display.set_icon(pygame.image.load(MATERIALSDIR+"image/pelican/0"))
 
 
-## Hiding the mouse
-pygame.mouse.set_visible(0)
-
-
-
 ## Defining here some constants:
 
 # Physics:
@@ -135,7 +130,7 @@ PELICAN_HITBOXES = [
 
 
 ## Frames per second
-FPS = 60
+FPS = 120
 # In pixels per frame
 BKG_SPEED = 1
 SEA_SPEED = 2
@@ -195,12 +190,18 @@ class Background():
     surface = pygame.Surface(SCREEN_SIZE)
     color = [255, 255, 255]
     surface.fill(tuple(color))
+    shadow = pygame.image.load(MATERIALSDIR+"image/bg/shadow")
+    clouds = pygame.image.load(MATERIALSDIR+"image/bg/clouds")
+    position = 0
+    speed = 1
+    surface.blit(shadow, (0, surface.get_height()-shadow.get_height()))
 
     def Trasitate(self, color):
         self.color[0] += int((color[0]-self.color[0])/FPS/0.125) # This last number represents the time it will take to transitate
         self.color[1] += int((color[1]-self.color[1])/FPS/0.125)
         self.color[2] += int((color[2]-self.color[2])/FPS/0.125)
         self.surface.fill(tuple(self.color))
+        self.surface.blit(self.shadow, (0, self.surface.get_height()-self.shadow.get_height()))
     
         print(self.color)
 
@@ -265,30 +266,31 @@ stages = [
         "mojarra"   : 25,
         "palometa"  : 25,
         "erizo"     : 25,
-        "boats"     : 10
+        "boats"     : 25
     },
 
     { # Stage 3
         "name" : "Warm Ocean",
         "max score" : 450,
-        "bg color"  : (237, 255, 246),
+        "bg color"  : (100, 255, 246),
 
         "caballa"   : 25,
         "mahi"      : 25,
         "atun"      : 25,
         "erizo"     : 25,
-        "boats"     : 20
+        "boats"     : 50
     },
 
     { # Stage 4
         "name" : "Cold Ocean",
         "max score" : 450,
+        "bg color"  : (13, 183, 242),
 
         "salmon"    : 17,
         "cusk"      : 17,
         "saithe"    : 17,
         "erizo"     : 49,
-        "boats"     : 25
+        "boats"     : 75
     },
 
     { # Stage 5
@@ -299,7 +301,7 @@ stages = [
         "cod"       : 10,
         "bigeye"    :  5,
         "erizo"     : 40,
-        "boats"     : 35
+        "boats"     : 100
     },
 ]
 
@@ -501,11 +503,20 @@ def addObject(obj, section):
 
 # Aca termina la
 
+def check_input(event):
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        wexit()
 
+    elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+        pygame.quit()
+        wexit()
 
+score = 0
 def die():
+    global score
 
-    texts[0].update("You diaed")
+    texts[0].update("You died")
 
     objects_in_game["Pelican"][0].__init__()
     
@@ -514,15 +525,12 @@ def die():
 def game():
     global stages
     global stage
+    global score
 
     ChangeStage()
 
     # Adding the pelican on its initial position
     addObject(Pelican(), "Pelican")
-
-
-    # The score must be 0 at the beginning, obviously
-    score = 0
 
     # For scrolling
     SEA_WIDTH = SEA_IMAGE.surface.get_width()
@@ -534,6 +542,9 @@ def game():
     # Scroll, variabiles that define the offset of scrolling images from original position
     sea_scroll = 0
     bkg_scroll = 0
+    
+    ## Hiding the mouse
+    pygame.mouse.set_visible(0)
 
     while True:
 
@@ -564,15 +575,9 @@ def game():
         # Checking input
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                wexit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    wexit()
-                elif event.key == pygame.K_UP:
-                    objects_in_game["Pelican"][0].velocity[1] = -PELICAN_JUMP
+            check_input(event)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                objects_in_game["Pelican"][0].velocity[1] = -PELICAN_JUMP
 
 
         # This is for checking keys specifically in the KEYS dictionary
@@ -737,8 +742,15 @@ def game():
 
         # Background
         BACKGROUND_IMAGE.Trasitate(stages[stage]["bg color"])
-
         DRAWSURFACES["Background"].append([BACKGROUND_IMAGE.surface, [0, 0]])
+
+        # Clouds
+        BACKGROUND_IMAGE.position += BACKGROUND_IMAGE.speed
+        if BACKGROUND_IMAGE.position >= SCREEN.get_width():
+            BACKGROUND_IMAGE.position = 0
+        for offset in range(2): 
+            DRAWSURFACES["Clouds"].append([BACKGROUND_IMAGE.clouds, [offset*SCREEN.get_width()-BACKGROUND_IMAGE.position, 100]])
+
 
 
 
@@ -770,31 +782,10 @@ def game():
         pygame.time.Clock().tick(FPS)
 
 
-
-def menu():
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                wexit()
-
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                wexit()
-            
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pos():
-                    pygame.mixer.Sound.play(click)
-                    menu = False # Exit the menu in case you are in the menu
-                    returnToMenu = True # This will be True for the rest of the current frame
-
-
-
-
-
-
 while True:
 
-    menu()
+    #instructions()
+
+    #menu()
 
     game()
