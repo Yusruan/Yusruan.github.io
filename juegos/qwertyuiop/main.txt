@@ -1,28 +1,40 @@
+# Pygame is not part of python, so first we need to import pygame to use it
 import pygame, sys
+# Pygame also has to be initiated to be used
+pygame.init()
+# Also this randint function that we can use to get random non decimal numbers
 from random import randint
 
-pygame.init()
-
+# The first thing we need is a window to display things on
 screen = pygame.display.set_mode((700, 500))
 screen_dimensions = screen.get_size()
 
+# Second thing we need are images to put into the screen
 background = pygame.transform.scale(pygame.image.load("background.jpeg"), screen_dimensions)
 
-obstacle_size = [100, 100]
+obstacle_size = [100, 100] # The image will be scaled to this size, while the bacgkground was scaled to fill the screen
 obstacle = pygame.transform.scale(pygame.image.load("obstacle.png"), obstacle_size)
 
-player_size = [100, 50]
+player_size = [100, 50]  # The image will be scaled to this size
 player = pygame.transform.scale(pygame.image.load("player.png"), player_size)
 
+# We need to have the position of the played in a variable that we can increase or decrease whenever we want
 player_position = [50, screen_dimensions[1]/2-player_size[1]/2]
-obstacles = []
 
+# And the position of each one of the obstacles as well
+obstacles = [] # Since they are so many, it is better to have them all grouped into a single list of elements
+
+# This is like a timer: It activates itself each second (1000 miliseconds)
 obstacle_creation = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_creation, 1000)
 
+# This is the moment where the game started so we can calculate the time transcurred from that moment
 game_starttime = 0
+# And this can either be True or False so we know if the player has lost or not
 died = False
 
+
+# And lastly we need to use the arial font to create an image that says Game over! and press ENTER to restart
 font = pygame.font.SysFont("Arial", 20)
 title = pygame.font.SysFont("Arial", 40)
 
@@ -36,72 +48,77 @@ game_over_text.blit(game_over_sub, (game_over_text.get_width()/2 - game_over_sub
 
 while True:
 
-    if died:
+    screen.blit(background, (0, 0)) # Blit is for putting the background in the screen, (0, 0) is the position of the corner
+
+    if died: # which is either True or False
 
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
-
                 pygame.quit()
                 sys.exit()
             
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                # If we pressed enter (it is not K_ENTER but K_RETURN)
+                obstacles = [] # Remove all the obstacles
+                player_position = [50, screen_dimensions[1]/2-player_size[1]/2] # Put the player at its initial position
+                game_starttime = round(pygame.time.get_ticks()/1000, 1) # Remember the exact moment where the game started
 
-                obstacles = []
-                player_position = [50, screen_dimensions[1]/2-player_size[1]/2]
-                game_starttime = round(pygame.time.get_ticks()/1000, 1)
+                died = False # died cannot be True if you are alive the only way to be alive again is to stop being dead cannot be both
 
-                died = False
+        screen.blit(game_over_text, (screen_dimensions[0]/2-game_over_text.get_width()/2, screen_dimensions[1]/2-game_over_text.get_height()/2)) # Now we use it the same way but for putting the game over text in the center
 
-        screen.blit(background, (0, 0))
-        screen.blit(game_over_text, (screen_dimensions[0]/2-game_over_text.get_width()/2, screen_dimensions[1]/2-game_over_text.get_height()/2))
-        score_display = font.render("Score: "+str(score), True, (255, 255, 255))
-        screen.blit(score_display, (screen_dimensions[0]/2 - score_display.get_width()/2, screen_dimensions[1]/2 - score_display.get_height()/2 + 100))
+        score_display = font.render("Score: "+str(time), True, (255, 255, 255))
+        screen.blit(score_display, (screen_dimensions[0]/2 - score_display.get_width()/2, screen_dimensions[1]/2 - score_display.get_height()/2 + 100)) # And finally we put the text with the score which is the time we lasted
         
-        pygame.display.update()
+        pygame.display.update() # Now we show to the user our drawing
         pygame.time.Clock().tick(20)
 
 
-    else:
+    else: # This is if we are not dead
 
-        screen.blit(background, (0, 0))
+        
 
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
-
                 pygame.quit()
                 sys.exit()
 
-            elif event.type == obstacle_creation:
-
+            elif event.type == obstacle_creation: # If it is the moment for creating a new obstacle
                 obstacles.append([screen_dimensions[0], randint(0, screen_dimensions[1]-obstacle_size[1])])
+                # We put another obstacle outside of the screen at a random position. Notice we are using the randint function
 
         if pygame.key.get_pressed()[pygame.K_DOWN] and player_position[1] <= screen_dimensions[1]-player_size[1] -5 :
             player_position[1] += 5
+            # If we press the DOWN arrow key AND we are not in the border of the screen, change (increase) the player y position
         if pygame.key.get_pressed()[pygame.K_UP] and player_position[1] >= 5:
             player_position[1] -= 5
+            # If we press the UP arrow key AND we are not in the border of the screen, change (decrease) the player y position
 
-        for obstacle_position in obstacles:
-
-            obstacle_position[0] -= 10
+        for obstacle_position in obstacles: # For each one of the obstacle we do the following
+            obstacle_position[0] -= 10 # Move it a little to the left
 
             if -obstacle_size[0] +17 <= obstacle_position[0] - player_position[0] <= player_size[0] -17:
                 if -obstacle_size[1] +17 <= obstacle_position[1] - player_position[1] <= player_size[1] -17:
-                    
-                    score = round(pygame.time.get_ticks()/1000 - game_starttime, 1)
+                    # Check if the obstacle is hitting the player, if yes then:
 
+                    # die
                     died = True
 
 
-
+            # And finally put the obstacle where we should see it
             screen.blit(obstacle, obstacle_position)
 
+        # Put the player image where we should see it
         screen.blit(player, player_position)
 
+        # Calculate the time we have lasted
+        # This is substracting the time to the moment where we started to the actual time
         time = round(pygame.time.get_ticks()/1000 - game_starttime, 1)
 
+        # Finally showing the text with the time we have lasted until now
         score_display = font.render("Time: "+str(time), True, (255, 255, 255))
         screen.blit(score_display, (0, 0))
+        
+        # And show everything we have drawn to the user
         pygame.display.update()
         pygame.time.Clock().tick(60)
