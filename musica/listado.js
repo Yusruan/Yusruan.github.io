@@ -9,6 +9,7 @@ const files = [
     "been_tealing_p1.wav",
     "been_tealing_p2.wav",
     "been_tealing_beat.wav",
+    "been_tealing_final.mp3",
     "yo_tu_mama_cuando.wav",
     "carti_type_beat.mp3",
     "carti_type_beat_sin_carti.mp3",
