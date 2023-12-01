@@ -14,6 +14,8 @@ const files = [
     "carti_type_beat.mp3",
     "carti_type_beat_sin_carti.mp3",
     "mejorbeatdelahistoria.mp3",
+    "los_cantantes.mp3",
+    "mrbean.mp3",
     "peo.mp3",
     "me_costo_demasiado_hacer_este_beat.mp3",
     "me_costo_demasiado_hacer_este_beat_(ft.santos).mp3",
@@ -21,10 +23,14 @@ const files = [
     "freddy_mi_amigo_(CLEAN).mp3",
     "freddy_mi_amigo.mp3",
     "santos_traidor.mp3",
+    "travessia.mp3",
     "bagatela1.wav",
     "bagatela2.wav",
     "bagatela3.wav",
-    "bagatela4.mp3"
+    "bagatela4.mp3",
+    "bagatela5.mp3",
+    "bagatela6.mp3",
+    "bagatela7.mp3"
 ];
 console.log(files.join(", "))
 
