@@ -30,7 +30,8 @@ const files = [
     "bagatela4.mp3",
     "bagatela5.mp3",
     "bagatela6.mp3",
-    "bagatela7.mp3"
+    "bagatela7.mp3",
+    "bagatela8.mp3"
 ];
 console.log(files.join(", "))
 
