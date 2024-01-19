@@ -1,4 +1,5 @@
 const files = [
+/*
     "intro.mp3",
     "bingchilling_beat.wav",
     "bingchilling.wav",
@@ -53,6 +54,8 @@ const files = [
     "CFmaj7D.mp3",
     "vos.mp3",
     "collab1.2(125bpm).mp3",
+    */
+    "BEEN TEALING*.mp3","BINCHILLING*.wav","Consciencia.mp3","Freddy mi amigo.mp3","Intro.mp3","Peo.mp3","PomPom*.mp3","Que Haces Aqui.mp3","UuBuFuf.mp3","Wi.mp3","Yo Queria.mp3"
 ];
 console.log(files.join(", "))
 
