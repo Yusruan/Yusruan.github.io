@@ -11,6 +11,7 @@ const files = [
     "been_tealing_beat.wav",
     "been_tealing_final.mp3",
     "yo_tu_mama_cuando.wav",
+    "y_el_corazon_pum_pum_pum.mp3",
     "carti_type_beat.mp3",
     "carti_type_beat_sin_carti.mp3",
     "mejorbeatdelahistoria.mp3",
@@ -37,7 +38,21 @@ const files = [
     "bagatela6.wav",
     "bagatela7.mp3",
     "bagatela8.mp3",
-    "bagatela9.mp3"
+    "bagatela9.mp3",
+    "b1",
+    "b4",
+    "b9",
+    "trabfinal",
+    "rap_consciencia",
+    "cuacua(beat)",
+    "kickbeat",
+    "guauguau",
+    "girdl2sd",
+    "dsadam",
+    "dsada6",
+    "CFmaj7D",
+    "vos",
+    "collab1.2(125bpm)",
 ];
 console.log(files.join(", "))
 
